@@ -31,10 +31,11 @@ class BuyEvent:
 class AlertService:
     """Poll Solana transactions and publish BeerGuy buy alerts to Telegram."""
 
-    def __init__(self, bot: Bot, solana: SolanaClient, settings: Settings) -> None:
+    def __init__(self, bot: Bot, solana: SolanaClient, settings: Settings, token_mint: str | None = None) -> None:
         self.bot = bot
         self.solana = solana
         self.settings = settings
+        self.token_mint = token_mint or settings.token_mint
         self.seen_signatures: set[str] = set()
         self.seen_holders: set[str] = set()
 
@@ -86,7 +87,7 @@ class AlertService:
 
     def _token_amount(self, balances: list[dict[str, Any]], owner: str) -> float:
         for balance in balances:
-            if balance.get("mint") == self.settings.token_mint and balance.get("owner") == owner:
+            if balance.get("mint") == self.token_mint and balance.get("owner") == owner:
                 return float(balance.get("uiTokenAmount", {}).get("uiAmount") or 0)
         return 0.0
 

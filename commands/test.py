@@ -4,13 +4,16 @@ from __future__ import annotations
 from telegram import Update
 from telegram.ext import ContextTypes
 
-TEST_TEXT = """🍺 BeerGuy Monitor is online!
+from utils.branding import official_links_keyboard, reply_branded_html, with_footer
+
+TEST_TEXT = with_footer("""🍺 <b>BeerGuy Monitor is online!</b>
 
 ✅ Telegram connected
 ✅ Bot is running
-⚔️ Brew. Farm. Raid."""
+✅ Community command system ready""")
 
 
 async def test_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a Telegram connectivity test message."""
-    await update.effective_message.reply_text(TEST_TEXT)
+    if update.effective_message:
+        await reply_branded_html(update.effective_message, TEST_TEXT, reply_markup=official_links_keyboard())
