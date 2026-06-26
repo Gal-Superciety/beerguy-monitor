@@ -12,6 +12,7 @@ Commands:
 /contract - BGUY mint address
 /holders - Holder and supply summary
 /raid - Rally the Beer Raiders
+/test - Confirm Telegram connectivity
 /help - Show commands
 /info - About BeerGuy Monitor
 
