@@ -39,7 +39,7 @@ class Settings:
     telegram_token: str = os.getenv("TELEGRAM_TOKEN", "")
     telegram_chat_id: str = os.getenv("TELEGRAM_CHAT_ID", "")
     solana_rpc: str = os.getenv("SOLANA_RPC", "https://api.mainnet-beta.solana.com")
-    token_mint: str = os.getenv("TOKEN_MINT", "")
+    token_mint: str = os.getenv("TOKEN_MINT", "7mF2JsRcr5MfeTQKkhMM8dZQSRvkpsnxeM23onzbBtuH")
     dexscreener_url: str = os.getenv("DEXSCREENER_URL", "")
     dexscreener_api_url: str = os.getenv("DEXSCREENER_API_URL", "")
     min_buy_alert: float = _get_float("MIN_BUY_ALERT", 25.0)
@@ -53,7 +53,6 @@ class Settings:
             for name, value in {
                 "TELEGRAM_TOKEN": self.telegram_token,
                 "TELEGRAM_CHAT_ID": self.telegram_chat_id,
-                "TOKEN_MINT": self.token_mint,
             }.items()
             if not value
         ]

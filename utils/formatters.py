@@ -23,3 +23,8 @@ def solscan_tx_url(signature: str) -> str:
 def solscan_account_url(address: str) -> str:
     """Build a Solscan account URL."""
     return f"https://solscan.io/account/{address}"
+
+
+def solscan_token_url(address: str) -> str:
+    """Build a Solscan token URL."""
+    return f"https://solscan.io/token/{address}"

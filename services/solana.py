@@ -43,3 +43,42 @@ class SolanaClient:
         """Return current token supply as a UI amount."""
         result = await self._rpc("getTokenSupply", [self.token_mint])
         return float(result.get("value", {}).get("uiAmount") or 0) if result else 0
+
+    async def parsed_account_info(self) -> dict[str, Any] | None:
+        """Return parsed mint account information."""
+        return await self._rpc("getAccountInfo", [self.token_mint, {"encoding": "jsonParsed"}])
+
+    async def token_holder_count(self) -> int | None:
+        """Best-effort count of non-empty token accounts for the configured mint."""
+        filters = [
+            {"dataSize": 165},
+            {"memcmp": {"offset": 0, "bytes": self.token_mint}},
+        ]
+        result = await self._rpc(
+            "getProgramAccounts",
+            [
+                "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                {"encoding": "jsonParsed", "filters": filters},
+            ],
+        )
+        if result is None:
+            return None
+        holders = {
+            account.get("account", {})
+            .get("data", {})
+            .get("parsed", {})
+            .get("info", {})
+            .get("owner")
+            for account in result
+            if float(
+                account.get("account", {})
+                .get("data", {})
+                .get("parsed", {})
+                .get("info", {})
+                .get("tokenAmount", {})
+                .get("uiAmount")
+                or 0
+            ) > 0
+        }
+        holders.discard(None)
+        return len(holders)

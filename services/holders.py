@@ -12,6 +12,7 @@ class HolderStats:
 
     largest_accounts: int
     supply: float
+    holder_count: int | None = None
 
 
 class HolderService:
@@ -23,4 +24,8 @@ class HolderService:
     async def stats(self) -> HolderStats:
         """Return a lightweight holder summary."""
         accounts, supply = await self.solana.token_largest_accounts(), await self.solana.token_supply()
-        return HolderStats(largest_accounts=len(accounts), supply=supply)
+        try:
+            holder_count = await self.solana.token_holder_count()
+        except Exception:
+            holder_count = None
+        return HolderStats(largest_accounts=len(accounts), supply=supply, holder_count=holder_count)
