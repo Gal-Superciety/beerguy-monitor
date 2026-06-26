@@ -45,6 +45,8 @@ class Settings:
     min_buy_alert: float = _get_float("MIN_BUY_ALERT", 25.0)
     big_buy_alert: float = _get_float("BIG_BUY_ALERT", 500.0)
     poll_interval: int = _get_int("POLL_INTERVAL", 20)
+    greeting_user_cooldown_seconds: int = _get_int("GREETING_USER_COOLDOWN_SECONDS", 600)
+    greeting_group_cooldown_seconds: int = _get_int("GREETING_GROUP_COOLDOWN_SECONDS", 120)
 
     def validate(self) -> None:
         """Validate settings required to run the Telegram bot."""
