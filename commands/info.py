@@ -16,7 +16,11 @@ HELP_TEXT = with_footer("""🍺 <b>BeerGuy Monitor Commands</b>
 
 🍺 <b>Community</b>
 /raid - Rally the Beer Raiders
+/links - Official website, X, Telegram, chart, and contract links
 /info - About BeerGuy Monitor
+
+🤝 <b>Auto Community Admin</b>
+Welcomes new Raiders, answers greetings, and helps with official link requests.
 
 🛠 <b>Utility</b>
 /help - Show commands

@@ -9,7 +9,8 @@ Official BeerGuy Monitor bot for the BeerGuy community. It tracks BGUY activity 
 - 🍺 New holder welcome alerts
 - 📈 DexScreener-powered market data
 - 🔎 Solana RPC transaction and token supply reads
-- 🤖 Telegram commands: `/price`, `/chart`, `/contract`, `/holders`, `/raid`, `/help`, `/info`
+- 🤖 Telegram commands: `/price`, `/chart`, `/contract`, `/holders`, `/raid`, `/links`, `/help`, `/info`
+- 🤝 Community admin assistant: welcomes new members, answers greetings with cooldowns, and provides official links from keywords
 - 🐳 Docker-ready deployment
 - 🧩 Modular structure for future sell, liquidity, burn, whale, volume, raid reminder, X, Discord, and website API integrations
 
@@ -78,6 +79,8 @@ DEXSCREENER_URL=https://dexscreener.com/solana/BGUY_PAIR
 MIN_BUY_ALERT=25
 BIG_BUY_ALERT=500
 POLL_INTERVAL=20
+GREETING_USER_COOLDOWN_SECONDS=600
+GREETING_GROUP_COOLDOWN_SECONDS=120
 ```
 
 ## Running Locally
@@ -110,6 +113,15 @@ docker run --env-file .env beerguy-monitor
 3. Install dependencies in a virtual environment.
 4. Create `.env`.
 5. Run with `systemd`, `supervisor`, or Docker.
+
+## Community Admin Behavior
+
+The bot acts like a friendly official BeerGuy community admin in Telegram groups:
+
+- Welcomes new non-bot members with rotating BeerGuy-branded messages and official inline buttons.
+- Replies to common English and Romanian greetings such as `gm`, `good morning`, `salut`, `bună`, `neata`, and `servus`.
+- Protects the group from greeting spam with `GREETING_USER_COOLDOWN_SECONDS` and `GREETING_GROUP_COOLDOWN_SECONDS`.
+- Answers link helper keywords such as `contract`, `ca`, `website`, `x`, `telegram`, `chart`, and `links` with official BeerGuy links.
 
 ## Alert Behavior
 

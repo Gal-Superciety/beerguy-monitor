@@ -4,18 +4,20 @@ from __future__ import annotations
 import logging
 
 from telegram import Update
-from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes
+from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes, MessageHandler, filters
 
 from commands.chart import chart_command
 from commands.contract import contract_command
 from commands.holders import holders_command
 from commands.info import help_command, info_command
 from commands.price import price_command
+from commands.links import links_command
 from commands.raid import raid_command
 from commands.start import start_command
 from commands.test import test_command
 from config import settings
 from services.alerts import AlertService
+from services.community import community_text_reply, welcome_new_members
 from services.dexscreener import DexScreenerClient
 from services.holders import HolderService
 from services.price import PriceService
@@ -47,10 +49,13 @@ def build_application() -> Application:
     application.add_handler(CommandHandler("contract", contract_command))
     application.add_handler(CommandHandler("holders", holders_command))
     application.add_handler(CommandHandler("raid", raid_command))
+    application.add_handler(CommandHandler("links", links_command))
     application.add_handler(CommandHandler("test", test_command))
     application.add_handler(CommandHandler("help", help_command))
     application.add_handler(CommandHandler("info", info_command))
     application.add_handler(CallbackQueryHandler(contract_callback, pattern="^show_contract$"))
+    application.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome_new_members))
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, community_text_reply))
     return application
 
 
