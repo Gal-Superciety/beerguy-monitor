@@ -42,6 +42,10 @@ class Settings:
     big_alert_usd: float = _float('BIG_ALERT_USD', 500)
     whale_alert_usd: float = _float('WHALE_ALERT_USD', 2500)
     poll_interval: int = _int('POLL_INTERVAL', 20)
+    enable_auto_replies: bool = _bool('ENABLE_AUTO_REPLIES', True)
+    enable_welcome_messages: bool = _bool('ENABLE_WELCOME_MESSAGES', True)
+    enable_goodbye_messages: bool = _bool('ENABLE_GOODBYE_MESSAGES', False)
+    auto_reply_cooldown: int = _int('AUTO_REPLY_COOLDOWN', 60)
     def validate(self):
         if not self.telegram_bot_token:
             raise RuntimeError('Missing TELEGRAM_BOT_TOKEN')

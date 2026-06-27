@@ -11,9 +11,6 @@ def normalize_message(text: str) -> str:
     return ' '.join(_WORD_RE.findall(n))
 def match_reply(text: str) -> FixedReply|None:
     m=normalize_message(text)
-    if m in {'gm','good morning','buna dimineata'}: return FixedReply('☀️ Good morning, BeerGuy raider!', 'GOOD_MORNING')
-    if m in {'hi','hello','salut','buna'}: return FixedReply('🍺 Salut! Bine ai venit în comunitatea BeerGuy / BGUY.', 'GREETING')
-    if m in {'buna ziua'}: return FixedReply('🍺 Bună ziua! BeerGuy monitor este online.', 'GREETING')
     if m in {'buy','how to buy','unde cumpar'}: return FixedReply(f'🛒 Cumpără BGUY aici: {settings.buy_url or "BUY_URL neconfigurat"}', 'BUY')
     if m in {'chart','grafic'}: return FixedReply(f'📈 Chart BGUY: {settings.chart_url or "CHART_URL neconfigurat"}')
     if m in {'price','pret'}: return FixedReply('', dynamic='price')
