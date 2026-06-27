@@ -2,15 +2,15 @@
 from __future__ import annotations
 
 import random
-import re
 import time
-import unicodedata
 
 from telegram import Update
 from telegram.ext import ContextTypes
 
 from config import settings
+from services.replies import match_text_reply, normalize_message
 from utils.branding import reply_branded_html, with_footer
+from utils.images import image_path
 from utils.keyboards import official_links_keyboard
 
 WELCOME_MESSAGES = (
@@ -26,64 +26,14 @@ WELCOME_MESSAGES = (
     "Use the official links below to stay connected.",
 )
 
-GREETING_REPLIES = (
-    "🍺 <b>Good morning, Beer Raiders!</b>\n\n"
-    "The tavern is open and the longship is ready.",
-    "<b>GM Raider</b> 🍺\n\n"
-    "New day, new raids, same BeerGuy energy.\n\n"
-    "Stay strong and keep building.",
-    "<b>Salut, Raider!</b> 🍺\n\n"
-    "Bine ai venit în tavernă.\n\n"
-    "Verifică linkurile oficiale și rămâi aproape de comunitate.",
-    "🍺 <b>Hey Raider!</b>\n\n"
-    "Good to see you in the BeerGuy tavern. Keep it friendly, loud, and legendary.",
-)
-
-GREETING_PHRASES = {
-    "good morning",
-    "gm",
-    "gm raiders",
-    "morning",
-    "hello",
-    "hi",
-    "hey",
-    "salut",
-    "buna",
-    "buna dimineata",
-    "neata",
-    "servus",
-    "ciao",
-}
-
 LINK_KEYWORDS = {"contract", "ca", "website", "site", "twitter", "x", "telegram", "chart", "links"}
 LINKS_TEXT = with_footer(
     "🍺 <b>Official BeerGuy Links</b>\n\n"
     "Use only official BeerGuy community links below, Raider."
 )
 
-_WORD_RE = re.compile(r"[\wăâîșşțţ]+", re.IGNORECASE)
-
-
-def _normalize(text: str) -> str:
-    normalized = unicodedata.normalize("NFKD", text.casefold())
-    return "".join(char for char in normalized if not unicodedata.combining(char))
-
-
-def _words(text: str) -> list[str]:
-    return _WORD_RE.findall(_normalize(text))
-
-
-def _is_greeting(text: str) -> bool:
-    clean = " ".join(_words(text))
-    if not clean:
-        return False
-    if clean in GREETING_PHRASES:
-        return True
-    return any(clean.startswith(f"{phrase} ") for phrase in GREETING_PHRASES)
-
-
 def _is_link_request(text: str) -> bool:
-    return bool(set(_words(text)) & LINK_KEYWORDS)
+    return bool(set(normalize_message(text).split()) & LINK_KEYWORDS)
 
 
 async def welcome_new_members(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -117,7 +67,8 @@ async def community_text_reply(update: Update, context: ContextTypes.DEFAULT_TYP
         )
         return
 
-    if not _is_greeting(message.text):
+    reply = match_text_reply(message.text)
+    if reply is None:
         return
 
     now = time.monotonic()
@@ -131,8 +82,11 @@ async def community_text_reply(update: Update, context: ContextTypes.DEFAULT_TYP
 
     last_by_user[user_key] = now
     last_by_chat[chat.id] = now
-    await reply_branded_html(
-        message,
-        with_footer(random.choice(GREETING_REPLIES)),
-        reply_markup=official_links_keyboard(include_contract_callback=False),
-    )
+    html = with_footer(reply.text)
+    path = image_path(reply.image)
+    reply_markup = official_links_keyboard(include_contract_callback=False)
+    if path:
+        with path.open("rb") as photo:
+            await message.reply_photo(photo=photo, caption=html, parse_mode="HTML", reply_markup=reply_markup)
+        return
+    await message.reply_html(html, reply_markup=reply_markup, disable_web_page_preview=True)
