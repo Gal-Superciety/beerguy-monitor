@@ -1,41 +1,13 @@
-"""Price service built on top of DexScreener data."""
-from __future__ import annotations
-
 from dataclasses import dataclass
-
-from services.dexscreener import DexScreenerClient
-
-
+from config import settings
+from chain.dexscreener import primary_pair
 @dataclass(frozen=True)
 class PriceSnapshot:
-    """Normalized price and liquidity data for Telegram commands."""
-
-    symbol: str
-    price_usd: float
-    liquidity_usd: float
-    volume_24h: float
-    price_change_24h: float
-    chart_url: str
-
-
-class PriceService:
-    """Fetch and normalize BeerGuy price data."""
-
-    def __init__(self, client: DexScreenerClient, fallback_chart_url: str = "") -> None:
-        self.client = client
-        self.fallback_chart_url = fallback_chart_url
-
-    async def snapshot(self) -> PriceSnapshot | None:
-        """Return the latest market snapshot, or None when unavailable."""
-        pair = await self.client.get_primary_pair()
-        if pair is None:
-            return None
-        base_token = pair.get("baseToken", {})
-        return PriceSnapshot(
-            symbol=base_token.get("symbol", "BGUY"),
-            price_usd=float(pair.get("priceUsd") or 0),
-            liquidity_usd=float(pair.get("liquidity", {}).get("usd") or 0),
-            volume_24h=float(pair.get("volume", {}).get("h24") or 0),
-            price_change_24h=float(pair.get("priceChange", {}).get("h24") or 0),
-            chart_url=pair.get("url") or self.fallback_chart_url,
-        )
+    symbol: str; price_usd: float; liquidity_usd: float; volume_24h: float; price_change_24h: float; chart_url: str
+async def get_price_snapshot() -> PriceSnapshot:
+    pair = await primary_pair()
+    if not pair: return PriceSnapshot(settings.token_symbol, 0, 0, 0, 0, settings.chart_url)
+    return PriceSnapshot((pair.get('baseToken') or {}).get('symbol') or settings.token_symbol, float(pair.get('priceUsd') or 0), float((pair.get('liquidity') or {}).get('usd') or 0), float((pair.get('volume') or {}).get('h24') or 0), float((pair.get('priceChange') or {}).get('h24') or 0), pair.get('url') or settings.chart_url)
+async def price_text() -> str:
+    s = await get_price_snapshot()
+    return f'🍺 <b>{s.symbol} Price</b>\nPrice: ${s.price_usd:.8f}\nLiquidity: ${s.liquidity_usd:,.0f}\n24h Volume: ${s.volume_24h:,.0f}\n24h Change: {s.price_change_24h:.2f}%\nChart: {s.chart_url or "N/A"}'
