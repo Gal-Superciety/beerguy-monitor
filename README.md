@@ -10,7 +10,7 @@ Official BeerGuy Monitor bot for the BeerGuy community. It tracks BGUY activity 
 - 📈 DexScreener-powered market data
 - 🔎 Solana RPC transaction and token supply reads
 - 🤖 Telegram commands: `/price`, `/chart`, `/contract`, `/holders`, `/raid`, `/links`, `/help`, `/info`
-- 🤝 Community admin assistant: welcomes new members, answers greetings with cooldowns, and provides official links from keywords
+- 🤝 Community admin assistant: welcomes new members, answers exact controlled greetings with cooldowns, and provides official links from keywords
 - 🐳 Docker-ready deployment
 - 🧩 Modular structure for future sell, liquidity, burn, whale, volume, raid reminder, X, Discord, and website API integrations
 
@@ -29,6 +29,7 @@ beerguy-monitor/
 │   ├── dexscreener.py
 │   ├── price.py
 │   ├── holders.py
+│   ├── replies.py
 │   └── alerts.py
 ├── commands/
 │   ├── price.py
@@ -139,7 +140,9 @@ docker run --env-file .env beerguy-monitor
 The bot acts like a friendly official BeerGuy community admin in Telegram groups:
 
 - Welcomes new non-bot members with rotating BeerGuy-branded messages and official inline buttons.
-- Replies to common English and Romanian greetings such as `gm`, `good morning`, `salut`, `bună`, `neata`, and `servus`.
+- Replies only to exact controlled English and Romanian greeting phrases from `services/replies.py`; responses are deterministic and do not use AI or random intent guessing.
+- Uses `assets/images/greeting.png` for `hi`, `hello`, `salut`, `buna`, `bună`, `buna ziua`, and `bună ziua`.
+- Uses `assets/images/good_morning.png` only for `gm`, `good morning`, `buna dimineata`, and `bună dimineața`, so `Hi` cannot receive a GM response.
 - Protects the group from greeting spam with `GREETING_USER_COOLDOWN_SECONDS` and `GREETING_GROUP_COOLDOWN_SECONDS`.
 - Answers link helper keywords such as `contract`, `ca`, `website`, `x`, `telegram`, `chart`, and `links` with official BeerGuy links.
 
@@ -172,12 +175,19 @@ Place production BeerGuy branded images in `assets/images/`. Images should not b
 
 Required/standard image slots:
 
-- `buy.png` for standard buy alerts
-- `sell.png` for sell alerts
-- `big_buy.png` for big buy alerts
-- `big_sell.png` for big sell alerts
-- `liquidity.png` for liquidity alerts
-- `new_holder.png` for first-seen holder alerts
+- `greeting.png` for `hi`, `hello`, `salut`, `buna`, `bună`, `buna ziua`, and `bună ziua` replies
+- `welcome.png` for welcome-style greeting assets
+- `good_morning.png` for `gm`, `good morning`, `buna dimineata`, and `bună dimineața` replies
+- `buy.png` for BUY alerts
+- `sell.png` for SELL alerts
+- `big_buy.png` for BIG BUY alerts
+- `big_sell.png` for BIG SELL alerts
+- `liquidity.png` for LIQUIDITY alerts
+- `new_holder.png` for NEW HOLDER alerts
+- `whale.png` for WHALE alerts
+- `burn.png` for BURN alerts
+- `price_milestone.png` for PRICE MILESTONE alerts
+- `holder_milestone.png` for HOLDER MILESTONE alerts
 - `announcement.png` for announcements
 - `giveaway.png` for giveaways
 - `contest.png` for contests
