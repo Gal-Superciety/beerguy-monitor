@@ -5,6 +5,8 @@ from dataclasses import dataclass
 import re
 import unicodedata
 
+from config import settings
+
 
 @dataclass(frozen=True)
 class ReplyDefinition:
@@ -54,17 +56,17 @@ GOOD_MORNING_REPLY = ReplyDefinition(
 
 GREETING_REPLIES = (GREETING_REPLY, GOOD_MORNING_REPLY)
 
-ALERT_IMAGES: dict[str, str] = {
-    "BUY": "buy.png",
-    "SELL": "sell.png",
-    "BIG_BUY": "big_buy.png",
-    "BIG_SELL": "big_sell.png",
-    "LIQUIDITY": "liquidity.png",
-    "NEW_HOLDER": "new_holder.png",
-    "WHALE": "whale.png",
-    "BURN": "burn.png",
-    "PRICE_MILESTONE": "price_milestone.png",
-    "HOLDER_MILESTONE": "holder_milestone.png",
+ALERT_IMAGE_SETTINGS: dict[str, str] = {
+    "BUY": "buy_image",
+    "SELL": "sell_image",
+    "BIG_BUY": "big_buy_image",
+    "BIG_SELL": "big_sell_image",
+    "LIQUIDITY": "liquidity_image",
+    "NEW_HOLDER": "new_holder_image",
+    "WHALE": "whale_image",
+    "BURN": "burn_image",
+    "PRICE_MILESTONE": "price_milestone_image",
+    "HOLDER_MILESTONE": "holder_milestone_image",
 }
 
 
@@ -83,4 +85,5 @@ def alert_image(alert_type: str) -> str:
     """Return the controlled image file for an alert type."""
     parts = [part for part in normalize_message(alert_type).split() if part != "alert"]
     key = "_".join(parts).upper()
-    return ALERT_IMAGES[key]
+    setting_name = ALERT_IMAGE_SETTINGS[key]
+    return getattr(settings, setting_name)
