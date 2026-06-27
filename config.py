@@ -47,6 +47,17 @@ class Settings:
     poll_interval: int = _get_int("POLL_INTERVAL", 20)
     greeting_user_cooldown_seconds: int = _get_int("GREETING_USER_COOLDOWN_SECONDS", 600)
     greeting_group_cooldown_seconds: int = _get_int("GREETING_GROUP_COOLDOWN_SECONDS", 120)
+    buy_image: str = os.getenv("BUY_IMAGE", "buy.png")
+    sell_image: str = os.getenv("SELL_IMAGE", "sell.png")
+    big_buy_image: str = os.getenv("BIG_BUY_IMAGE", "big_buy.png")
+    big_sell_image: str = os.getenv("BIG_SELL_IMAGE", "big_sell.png")
+    liquidity_image: str = os.getenv("LIQUIDITY_IMAGE", "liquidity.png")
+    new_holder_image: str = os.getenv("NEW_HOLDER_IMAGE", "new_holder.png")
+    announcement_image: str = os.getenv("ANNOUNCEMENT_IMAGE", "announcement.png")
+    giveaway_image: str = os.getenv("GIVEAWAY_IMAGE", "giveaway.png")
+    contest_image: str = os.getenv("CONTEST_IMAGE", "contest.png")
+    loading_image: str = os.getenv("LOADING_IMAGE", "loading.png")
+    logo_image: str = os.getenv("LOGO_IMAGE", "logo.png")
 
     def validate(self) -> None:
         """Validate settings required to run the Telegram bot."""

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from telegram import InlineKeyboardMarkup, Message
 
+from config import settings
 from utils.keyboards import BEERGUY_MINT, official_links_keyboard
 from utils.images import image_path
 
@@ -29,7 +30,7 @@ async def reply_branded_html(
     logo: bool = True,
 ) -> None:
     """Reply with the BeerGuy logo when available, falling back to HTML text."""
-    path = image_path("logo.png") if logo else None
+    path = image_path(settings.logo_image) if logo else None
     if path:
         with path.open("rb") as photo:
             await message.reply_photo(photo=photo, caption=html, parse_mode="HTML", reply_markup=reply_markup)
