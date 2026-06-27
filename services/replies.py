@@ -1,89 +1,20 @@
-"""Deterministic Telegram replies and alert image mappings."""
-from __future__ import annotations
-
+import unicodedata, re
 from dataclasses import dataclass
-import re
-import unicodedata
-
 from config import settings
-
-
+_WORD_RE=re.compile(r'[\wăâîșşțţ]+', re.I)
 @dataclass(frozen=True)
-class ReplyDefinition:
-    """Controlled text/image response for a known Telegram intent."""
-
-    keywords: frozenset[str]
-    text: str
-    image: str
-
-
-_WORD_RE = re.compile(r"[\wăâîșşțţ]+", re.IGNORECASE)
-
-
+class FixedReply:
+    text: str; image_kind: str|None=None; dynamic: str|None=None
 def normalize_message(text: str) -> str:
-    """Normalize a Telegram message for exact controlled phrase matching."""
-    normalized = unicodedata.normalize("NFKD", text.casefold())
-    without_accents = "".join(char for char in normalized if not unicodedata.combining(char))
-    words = _WORD_RE.findall(without_accents)
-    return " ".join(words)
-
-
-GREETING_REPLY = ReplyDefinition(
-    keywords=frozenset(
-        {
-            "hi",
-            "hello",
-            "salut",
-            "buna",
-            "buna ziua",
-        }
-    ),
-    text="🍺 <b>Salut, Raider!</b> Bine ai venit în taverna BeerGuy.",
-    image="greeting.png",
-)
-
-GOOD_MORNING_REPLY = ReplyDefinition(
-    keywords=frozenset(
-        {
-            "gm",
-            "good morning",
-            "buna dimineata",
-        }
-    ),
-    text="☀️ <b>Good morning, Raider!</b> Taverna este deschisă.",
-    image="good_morning.png",
-)
-
-GREETING_REPLIES = (GREETING_REPLY, GOOD_MORNING_REPLY)
-
-ALERT_IMAGE_SETTINGS: dict[str, str] = {
-    "BUY": "buy_image",
-    "SELL": "sell_image",
-    "BIG_BUY": "big_buy_image",
-    "BIG_SELL": "big_sell_image",
-    "LIQUIDITY": "liquidity_image",
-    "NEW_HOLDER": "new_holder_image",
-    "WHALE": "whale_image",
-    "BURN": "burn_image",
-    "PRICE_MILESTONE": "price_milestone_image",
-    "HOLDER_MILESTONE": "holder_milestone_image",
-}
-
-
-def match_text_reply(text: str) -> ReplyDefinition | None:
-    """Return a reply only when the whole message exactly matches a known phrase."""
-    normalized = normalize_message(text)
-    if not normalized:
-        return None
-    for reply in GREETING_REPLIES:
-        if normalized in reply.keywords:
-            return reply
+    n=unicodedata.normalize('NFKD', text.casefold())
+    n=''.join(c for c in n if not unicodedata.combining(c))
+    return ' '.join(_WORD_RE.findall(n))
+def match_reply(text: str) -> FixedReply|None:
+    m=normalize_message(text)
+    if m in {'gm','good morning','buna dimineata'}: return FixedReply('☀️ Good morning, BeerGuy raider!', 'GOOD_MORNING')
+    if m in {'hi','hello','salut','buna'}: return FixedReply('🍺 Salut! Bine ai venit în comunitatea BeerGuy / BGUY.', 'GREETING')
+    if m in {'buna ziua'}: return FixedReply('🍺 Bună ziua! BeerGuy monitor este online.', 'GREETING')
+    if m in {'buy','how to buy','unde cumpar'}: return FixedReply(f'🛒 Cumpără BGUY aici: {settings.buy_url or "BUY_URL neconfigurat"}', 'BUY')
+    if m in {'chart','grafic'}: return FixedReply(f'📈 Chart BGUY: {settings.chart_url or "CHART_URL neconfigurat"}')
+    if m in {'price','pret'}: return FixedReply('', dynamic='price')
     return None
-
-
-def alert_image(alert_type: str) -> str:
-    """Return the controlled image file for an alert type."""
-    parts = [part for part in normalize_message(alert_type).split() if part != "alert"]
-    key = "_".join(parts).upper()
-    setting_name = ALERT_IMAGE_SETTINGS[key]
-    return getattr(settings, setting_name)

@@ -1,31 +1,4 @@
-"""Holder-related services for BeerGuy Monitor."""
-from __future__ import annotations
-
-from dataclasses import dataclass
-
-from services.solana import SolanaClient
-
-
-@dataclass(frozen=True)
-class HolderStats:
-    """Basic holder and supply summary."""
-
-    largest_accounts: int
-    supply: float
-    holder_count: int | None = None
-
-
-class HolderService:
-    """Fetch holder-oriented Solana token data."""
-
-    def __init__(self, solana: SolanaClient) -> None:
-        self.solana = solana
-
-    async def stats(self) -> HolderStats:
-        """Return a lightweight holder summary."""
-        accounts, supply = await self.solana.token_largest_accounts(), await self.solana.token_supply()
-        try:
-            holder_count = await self.solana.token_holder_count()
-        except Exception:
-            holder_count = None
-        return HolderStats(largest_accounts=len(accounts), supply=supply, holder_count=holder_count)
+from chain.birdeye import token_overview
+async def holders_count():
+    data=await token_overview(); d=data.get('data') or {}; return int(d.get('holder') or d.get('holders') or 0)
+async def holders_text(): return f'👥 <b>Holders</b>\nTotal: {await holders_count():,}'
