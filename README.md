@@ -102,6 +102,10 @@ GIVEAWAY_IMAGE=giveaway.png
 CONTEST_IMAGE=contest.png
 LOADING_IMAGE=loading.png
 LOGO_IMAGE=logo.png
+WHALE_IMAGE=whale.png
+BURN_IMAGE=burn.png
+PRICE_MILESTONE_IMAGE=price_milestone.png
+HOLDER_MILESTONE_IMAGE=holder_milestone.png
 ```
 
 ## Running Locally
@@ -194,7 +198,7 @@ Required/standard image slots:
 - `loading.png` for loading/status messages
 - `logo.png` for branded command replies
 
-You can keep the default names above or override them in `.env` with variables such as `BUY_IMAGE`, `BIG_BUY_IMAGE`, `NEW_HOLDER_IMAGE`, or `LOGO_IMAGE`. Each value should be only a file name, and the bot will look for it inside `assets/images/`.
+You can keep the default names above or override them in `.env` with variables such as `BUY_IMAGE`, `BIG_BUY_IMAGE`, `NEW_HOLDER_IMAGE`, `WHALE_IMAGE`, `BURN_IMAGE`, `PRICE_MILESTONE_IMAGE`, `HOLDER_MILESTONE_IMAGE`, or `LOGO_IMAGE`. Each value should be only a file name, and the bot will look for it inside `assets/images/`.
 
 If an image file is missing or empty, the bot automatically sends a text-only Telegram message instead of failing.
 

@@ -58,6 +58,10 @@ class Settings:
     contest_image: str = os.getenv("CONTEST_IMAGE", "contest.png")
     loading_image: str = os.getenv("LOADING_IMAGE", "loading.png")
     logo_image: str = os.getenv("LOGO_IMAGE", "logo.png")
+    whale_image: str = os.getenv("WHALE_IMAGE", "whale.png")
+    burn_image: str = os.getenv("BURN_IMAGE", "burn.png")
+    price_milestone_image: str = os.getenv("PRICE_MILESTONE_IMAGE", "price_milestone.png")
+    holder_milestone_image: str = os.getenv("HOLDER_MILESTONE_IMAGE", "holder_milestone.png")
 
     def validate(self) -> None:
         """Validate settings required to run the Telegram bot."""
