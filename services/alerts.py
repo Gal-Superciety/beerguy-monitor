@@ -106,7 +106,7 @@ class AlertService:
             f"🔗 <a href=\"{solscan_tx_url(event.signature)}\">Transaction</a>\n\n"
             "⚔️ Brew. Farm. Raid."
         )
-        await self._send_photo_or_message("big_buy.png" if is_big else "buy.png", caption)
+        await self._send_photo_or_message(self.settings.big_buy_image if is_big else self.settings.buy_image, caption)
 
     async def send_new_holder_alert(self, wallet: str) -> None:
         """Send a first-seen holder alert."""
@@ -116,7 +116,7 @@ class AlertService:
             f"👤 Wallet:\n{shorten_wallet(wallet)}\n\n"
             "🔥 Welcome, Raider!\n\n⚔️ Brew. Farm. Raid."
         )
-        await self._send_photo_or_message("new_holder.png", caption)
+        await self._send_photo_or_message(self.settings.new_holder_image, caption)
 
     async def _send_photo_or_message(self, asset_name: str, caption: str) -> None:
         path = image_path(asset_name)

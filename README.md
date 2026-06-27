@@ -42,10 +42,17 @@ beerguy-monitor/
 │   ├── images.py
 │   └── logger.py
 └── assets/
-    ├── buy.png
-    ├── big_buy.png
-    ├── new_holder.png
-    └── logo.png
+    └── images/
+        ├── buy.png
+        ├── sell.png
+        ├── big_buy.png
+        ├── big_sell.png
+        ├── liquidity.png
+        ├── new_holder.png
+        ├── announcement.png
+        ├── giveaway.png
+        ├── contest.png
+        └── loading.png
 ```
 
 ## Requirements
@@ -81,6 +88,19 @@ BIG_BUY_ALERT=500
 POLL_INTERVAL=20
 GREETING_USER_COOLDOWN_SECONDS=600
 GREETING_GROUP_COOLDOWN_SECONDS=120
+
+# Optional image names loaded from assets/images/
+BUY_IMAGE=buy.png
+SELL_IMAGE=sell.png
+BIG_BUY_IMAGE=big_buy.png
+BIG_SELL_IMAGE=big_sell.png
+LIQUIDITY_IMAGE=liquidity.png
+NEW_HOLDER_IMAGE=new_holder.png
+ANNOUNCEMENT_IMAGE=announcement.png
+GIVEAWAY_IMAGE=giveaway.png
+CONTEST_IMAGE=contest.png
+LOADING_IMAGE=loading.png
+LOGO_IMAGE=logo.png
 ```
 
 ## Running Locally
@@ -148,14 +168,25 @@ New first-seen buyers receive a holder welcome alert:
 
 ## Assets
 
-Place production BeerGuy branded images in `assets/`:
+Place production BeerGuy branded images in `assets/images/`. Images should not be stored in the repository root or directly in `assets/`; Telegram alerts resolve image names from this dedicated folder automatically.
+
+Required/standard image slots:
 
 - `buy.png` for standard buy alerts
+- `sell.png` for sell alerts
 - `big_buy.png` for big buy alerts
+- `big_sell.png` for big sell alerts
+- `liquidity.png` for liquidity alerts
 - `new_holder.png` for first-seen holder alerts
-- `logo.png` for future branding use
+- `announcement.png` for announcements
+- `giveaway.png` for giveaways
+- `contest.png` for contests
+- `loading.png` for loading/status messages
+- `logo.png` for branded command replies
 
-If an image file is missing or empty, the bot automatically sends a text-only Telegram message.
+You can keep the default names above or override them in `.env` with variables such as `BUY_IMAGE`, `BIG_BUY_IMAGE`, `NEW_HOLDER_IMAGE`, or `LOGO_IMAGE`. Each value should be only a file name, and the bot will look for it inside `assets/images/`.
+
+If an image file is missing or empty, the bot automatically sends a text-only Telegram message instead of failing.
 
 ## Future Extensions
 
