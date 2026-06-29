@@ -7,6 +7,7 @@ from bot.alerts import send_with_optional_image
 from services.replies import match_reply
 from services.price import price_text
 from services.community import handle_auto_reply, welcome_new_members, goodbye_member
+from services.moderation import moderate_message
 logging.basicConfig(level=logging.INFO)
 async def fixed_replies(update, context):
     reply=match_reply(update.effective_message.text or '')
@@ -20,8 +21,10 @@ def build_application():
     app.add_handler(CallbackQueryHandler(handle_callback))
     app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome_new_members))
     app.add_handler(MessageHandler(filters.StatusUpdate.LEFT_CHAT_MEMBER, goodbye_member))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_auto_reply))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, fixed_replies))
+    message_content = filters.TEXT | filters.CaptionRegex(r'.+')
+    app.add_handler(MessageHandler(message_content & ~filters.COMMAND, moderate_message), group=0)
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_auto_reply), group=1)
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, fixed_replies), group=2)
     return app
 def main(): build_application().run_polling(close_loop=False)
 if __name__ == '__main__': main()
