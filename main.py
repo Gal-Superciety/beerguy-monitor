@@ -16,7 +16,7 @@ async def fixed_replies(update, context):
     await send_with_optional_image(context.bot, update.effective_chat.id, text, reply.image_kind)
 def build_application():
     settings.validate(); app=Application.builder().token(settings.telegram_bot_token).build()
-    for name in ['start','menu','status','price','liquidity','holders','buy','chart','testalert','admin']:
+    for name in ['start','menu','status','price','liquidity','holders','buy','chart','contract','raid','links','info','help','testalert','admin']:
         app.add_handler(CommandHandler(name, getattr(commands, name)))
     app.add_handler(CallbackQueryHandler(handle_callback))
     app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome_new_members))
