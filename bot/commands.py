@@ -2,7 +2,7 @@ from telegram import Update
 from telegram.ext import ContextTypes
 from config import settings
 from bot.keyboards import admin_menu, premium_start_menu, public_menu
-from bot.alerts import send_with_optional_image, broadcast_alert
+from bot.alerts import send_optional_photo, send_with_optional_image, broadcast_alert
 from services.price import price_text
 from services.liquidity import liquidity_text
 from services.holders import holders_text
@@ -18,10 +18,20 @@ def _contract_url() -> str | None:
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     welcome = image_path('WELCOME')
-    if welcome:
-        with welcome.open('rb') as photo:
-            await update.effective_message.reply_photo(photo=photo)
-    await update.effective_message.reply_markdown(WELCOME_MESSAGE, reply_markup=premium_start_menu())
+
+    async def send_photo(photo):
+        return await update.effective_message.reply_photo(photo=photo)
+
+    async def send_text(message: str):
+        return await update.effective_message.reply_markdown(message, reply_markup=premium_start_menu())
+
+    await send_optional_photo(
+        welcome,
+        WELCOME_MESSAGE,
+        send_photo,
+        send_text,
+        fallback_log='Welcome image not found.\nSending text-only welcome.',
+    )
 
 async def menu(update: Update, context: ContextTypes.DEFAULT_TYPE): await update.effective_message.reply_text('BeerGuy command center:', reply_markup=public_menu())
 async def admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
