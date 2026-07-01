@@ -84,14 +84,11 @@ class LeaderboardService:
         year, week, _ = current.isocalendar()
         return f'{year}-W{week:02d}'
 
-    def day_key(self, dt: datetime | None = None) -> str:
-        return (dt or self.now()).strftime('%Y-%m-%d')
-
     def reset_week(self, data: dict, week_key: str | None = None) -> None:
         key = week_key or self.week_key()
         for user in data.get('users', {}).values():
             user['weekly_points'] = 0
-            user['daily_points'] = {}
+            user.pop('daily_points', None)
             user['scored_messages'] = []
             user['week_key'] = key
 
@@ -145,13 +142,12 @@ class LeaderboardService:
             return 0
         now = self.now()
         week = self.week_key(now)
-        day = self.day_key(now)
         user_id = str(user.id)
         record = data['users'].setdefault(user_id, self._new_user(user, week))
         self._refresh_user(record, user)
         if record.get('week_key') != week:
             record['weekly_points'] = 0
-            record['daily_points'] = {}
+            record.pop('daily_points', None)
             record['scored_messages'] = []
             record['week_key'] = week
         signature = self._message_signature(message)
@@ -160,13 +156,8 @@ class LeaderboardService:
         last_at = datetime.fromisoformat(record.get('last_scored_at', '1970-01-01T00:00:00+00:00'))
         if (now - last_at).total_seconds() < settings.leaderboard_message_cooldown_seconds:
             return 0
-        daily_points = int(record.get('daily_points', {}).get(day, 0))
-        allowed = max(settings.leaderboard_max_daily_points - daily_points, 0)
-        awarded = min(points, allowed)
-        if awarded <= 0:
-            return 0
+        awarded = points
         record['weekly_points'] = int(record.get('weekly_points', 0)) + awarded
-        record.setdefault('daily_points', {})[day] = daily_points + awarded
         record['last_scored_at'] = now.isoformat()
         if signature:
             record.setdefault('scored_messages', []).append(signature)
@@ -247,7 +238,7 @@ class LeaderboardService:
 
     @staticmethod
     def _new_user(user, week: str) -> dict:
-        return {'id': user.id, 'username': user.username, 'first_name': user.first_name, 'weekly_points': 0, 'daily_points': {}, 'week_key': week, 'last_scored_at': '1970-01-01T00:00:00+00:00', 'scored_messages': []}
+        return {'id': user.id, 'username': user.username, 'first_name': user.first_name, 'weekly_points': 0, 'week_key': week, 'last_scored_at': '1970-01-01T00:00:00+00:00', 'scored_messages': []}
 
     @staticmethod
     def _refresh_user(record: dict, user) -> None:
