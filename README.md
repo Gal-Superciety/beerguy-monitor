@@ -98,7 +98,7 @@ pytest
 
 Set `LEADERBOARD_ENABLED=true` to score real Telegram community engagement. Scoring is intentionally quiet so normal chat remains natural: normal messages earn 1 point, replies earn 2 extra points, useful BeerGuy-related discussion earns 3 extra points, media/memes/GIFs earn 2 points, and detectable member invites earn 5 points. Bot messages, spam, repeated messages, scam links, deleted/moderated messages, and low-effort short messages are not rewarded.
 
-Anti-abuse defaults limit each user to one scored message every 60 seconds, while weekly activity points are unlimited. Points are persisted in `data/leaderboard.json` so Railway restarts do not clear the current week.
+Anti-abuse defaults limit each user to one scored message every 60 seconds, while each user can earn up to 1500 weekly points. Points are persisted in `data/leaderboard.json` so Railway restarts do not clear the current week, and scored activity events are also stored in `data/leaderboard_events.json` so admins can rebuild the leaderboard from activity the bot observed.
 
 ```env
 LEADERBOARD_ENABLED=true
@@ -113,6 +113,7 @@ Commands:
 - `/leaderboard` shows the current weekly top 10 Beer Raiders.
 - `/leaderboard_reset` resets the current week (admin only).
 - `/leaderboard_export` exports the JSON store (admin only).
+- `/leaderboard_rebuild` rebuilds the current leaderboard from stored scored activity events when available (admin only).
 - `/leaderboard_pause` pauses scoring (admin only).
 - `/leaderboard_resume` resumes scoring (admin only).
 
