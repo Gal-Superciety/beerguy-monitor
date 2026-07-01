@@ -8,6 +8,7 @@ from services.liquidity import liquidity_text
 from services.holders import holders_text
 from services.status import status_text
 from storage.files import image_path
+from services.leaderboard import leaderboard_command as leaderboard, leaderboard_reset, leaderboard_export, leaderboard_pause, leaderboard_resume
 
 WELCOME_MESSAGE = """🍺 *Welcome to BeerGuy Monitor*
 
