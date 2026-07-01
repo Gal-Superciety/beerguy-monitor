@@ -98,14 +98,13 @@ pytest
 
 Set `LEADERBOARD_ENABLED=true` to score real Telegram community engagement. Scoring is intentionally quiet so normal chat remains natural: normal messages earn 1 point, replies earn 2 extra points, useful BeerGuy-related discussion earns 3 extra points, media/memes/GIFs earn 2 points, and detectable member invites earn 5 points. Bot messages, spam, repeated messages, scam links, deleted/moderated messages, and low-effort short messages are not rewarded.
 
-Anti-abuse defaults limit each user to one scored message every 60 seconds and 30 points per day. Points are persisted in `data/leaderboard.json` so Railway restarts do not clear the current week.
+Anti-abuse defaults limit each user to one scored message every 60 seconds, while weekly activity points are unlimited. Points are persisted in `data/leaderboard.json` so Railway restarts do not clear the current week.
 
 ```env
 LEADERBOARD_ENABLED=true
 LEADERBOARD_POST_DAY=saturday
 LEADERBOARD_POST_HOUR=18
 LEADERBOARD_TIMEZONE=Europe/Berlin
-LEADERBOARD_MAX_DAILY_POINTS=30
 LEADERBOARD_MESSAGE_COOLDOWN_SECONDS=60
 ```
 

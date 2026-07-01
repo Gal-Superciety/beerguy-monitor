@@ -50,7 +50,6 @@ class Settings:
     leaderboard_post_day: str = os.getenv('LEADERBOARD_POST_DAY', 'saturday')
     leaderboard_post_hour: int = _int('LEADERBOARD_POST_HOUR', 18)
     leaderboard_timezone: str = os.getenv('LEADERBOARD_TIMEZONE', 'Europe/Berlin')
-    leaderboard_max_daily_points: int = _int('LEADERBOARD_MAX_DAILY_POINTS', 30)
     leaderboard_message_cooldown_seconds: int = _int('LEADERBOARD_MESSAGE_COOLDOWN_SECONDS', 60)
     def validate(self):
         if not self.telegram_bot_token:
