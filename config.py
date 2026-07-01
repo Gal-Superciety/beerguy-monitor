@@ -46,6 +46,12 @@ class Settings:
     enable_welcome_messages: bool = _bool('ENABLE_WELCOME_MESSAGES', True)
     enable_goodbye_messages: bool = _bool('ENABLE_GOODBYE_MESSAGES', False)
     auto_reply_cooldown: int = _int('AUTO_REPLY_COOLDOWN', 60)
+    leaderboard_enabled: bool = _bool('LEADERBOARD_ENABLED', True)
+    leaderboard_post_day: str = os.getenv('LEADERBOARD_POST_DAY', 'saturday')
+    leaderboard_post_hour: int = _int('LEADERBOARD_POST_HOUR', 18)
+    leaderboard_timezone: str = os.getenv('LEADERBOARD_TIMEZONE', 'Europe/Berlin')
+    leaderboard_max_daily_points: int = _int('LEADERBOARD_MAX_DAILY_POINTS', 30)
+    leaderboard_message_cooldown_seconds: int = _int('LEADERBOARD_MESSAGE_COOLDOWN_SECONDS', 60)
     def validate(self):
         if not self.telegram_bot_token:
             raise RuntimeError('Missing TELEGRAM_BOT_TOKEN')
